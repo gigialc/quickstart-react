@@ -6,7 +6,7 @@ import Vapi from "@vapi-ai/web";
 import { isPublicKeyMissingError } from "./utils";
 
 // Put your Vapi Public Key below.
-const vapi = new Vapi("0000XXXX-XXXX-XXXX-XXXX-XXXXXXXX0000");
+const vapi = new Vapi("80895bf2-66fd-4a71-9c6c-3dcef783c644");
 
 const App = () => {
   const [connecting, setConnecting] = useState(false);
@@ -75,14 +75,21 @@ const App = () => {
         height: "100vh",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#f7f7f7",
       }}
     >
       {!connected ? (
-        <Button
-          label="Call Vapi’s Pizza Front Desk"
-          onClick={startCallInline}
-          isLoading={connecting}
-        />
+       <img
+       src="BetterYou.png"
+       onClick={startCallInline}
+       style={{
+         cursor: "pointer",
+         width: "300px",
+         height: "auto",
+         borderRadius: "50%", // Mimics `rounded-full` for circular appearance
+       }}
+       className="bounce rounded-full" // Tailwind utility class for bounce animation
+     />
       ) : (
         <ActiveCallDetail
           assistantIsSpeaking={assistantIsSpeaking}
@@ -92,69 +99,50 @@ const App = () => {
       )}
 
       {showPublicKeyInvalidMessage ? <PleaseSetYourPublicKeyMessage /> : null}
-      <ReturnToDocsLink />
     </div>
   );
 };
 
 const assistantOptions = {
-  name: "Vapi’s Pizza Front Desk",
-  firstMessage: "Vappy’s Pizzeria speaking, how can I help you?",
+  name: "AI Voice Clone Assistant",
+  firstMessage: "Hello! I'm your AI voice assistant, here to guide you toward your best self. Let's get started.",
   transcriber: {
     provider: "deepgram",
     model: "nova-2",
     language: "en-US",
   },
   voice: {
-    provider: "playht",
-    voiceId: "jennifer",
+    provider: "elevenlabs",
+    voiceId: "AP75bObawmAbTpaDIy4h",
   },
   model: {
-    provider: "openai",
+    provider: "openai", // Core model for generating affirmations
     model: "gpt-4",
     messages: [
       {
         role: "system",
-        content: `You are a voice assistant for Vappy’s Pizzeria, a pizza shop located on the Internet.
+        content: `
+    You are an AI voice assistant designed to enhance users' self-perception and mental well-being by delivering personalized affirmations in their voice.
 
-Your job is to take the order of customers calling in. The menu has only 3 types
-of items: pizza, sides, and drinks. There are no other types of items on the menu.
+    Your primary tasks include:
+    1) Generating affirmations tailored to the user's current goals, emotional state, and progress.
+    2) Incorporating memory from past interactions to make affirmations context-aware and relevant.
+    3) Adjusting emotional tones such as confidence, resilience, and positivity in your responses.
 
-1) There are 3 kinds of pizza: cheese pizza, pepperoni pizza, and vegetarian pizza
-(often called "veggie" pizza).
-2) There are 3 kinds of sides: french fries, garlic bread, and chicken wings.
-3) There are 2 kinds of drinks: soda, and water. (if a customer asks for a
-brand name like "coca cola", just let them know that we only offer "soda")
+    Key guidelines for affirmations:
+    - Use positive framing and present tense (e.g., "You are capable and strong").
+    - Avoid negative language or comparisons.
+    - Include visualization prompts (e.g., "Imagine yourself achieving this with ease").
+    - Keep responses short and conversational, reflecting the user's tone and style.
+    - When responding to feedback from a voice note, acknowledge the user's emotions (e.g., "I hear that you're feeling overwhelmed") and adapt the affirmation accordingly.
 
-Customers can only order 1 of each item. If a customer tries to order more
-than 1 item within each category, politely inform them that only 1 item per
-category may be ordered.
+    Always maintain a warm, encouraging, and uplifting tone. Your goal is to help the user feel confident, motivated, and aligned with their aspirations.
 
-Customers must order 1 item from at least 1 category to have a complete order.
-They can order just a pizza, or just a side, or just a drink.
-
-Be sure to introduce the menu items, don't assume that the caller knows what
-is on the menu (most appropriate at the start of the conversation).
-
-If the customer goes off-topic or off-track and talks about anything but the
-process of ordering, politely steer the conversation back to collecting their order.
-
-Once you have all the information you need pertaining to their order, you can
-end the conversation. You can say something like "Awesome, we'll have that ready
-for you in 10-20 minutes." to naturally let the customer know the order has been
-fully communicated.
-
-It is important that you collect the order in an efficient manner (succinct replies
-& direct questions). You only have 1 task here, and it is to collect the customers
-order, then end the conversation.
-
-- Be sure to be kind of funny and witty!
-- Keep all your responses short and simple. Use casual language, phrases like "Umm...", "Well...", and "I mean" are preferred.
-- This is a voice conversation, so keep your responses short, like in a real conversation. Don't ramble for too long.`,
+    Start by generating a simple affirmation: "You are capable of amazing things, and each day brings you closer to your goals."`,
+          },
+        ],
       },
-    ],
-  },
-};
+    };
 
 const usePublicKeyInvalid = () => {
   const [showPublicKeyInvalidMessage, setShowPublicKeyInvalidMessage] = useState(false);
@@ -190,28 +178,6 @@ const PleaseSetYourPublicKeyMessage = () => {
     >
       Is your Vapi Public Key missing? (recheck your code)
     </div>
-  );
-};
-
-const ReturnToDocsLink = () => {
-  return (
-    <a
-      href="https://docs.vapi.ai"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        position: "fixed",
-        top: "25px",
-        right: "25px",
-        padding: "5px 10px",
-        color: "#fff",
-        textDecoration: "none",
-        borderRadius: "5px",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-      }}
-    >
-      return to docs
-    </a>
   );
 };
 
