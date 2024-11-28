@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import ActiveCallDetail from "./components/ActiveCallDetail";
-import Button from "./components/base/Button";
+// import Button from "./components/base/Button"; // Removed unused import
 import Vapi from "@vapi-ai/web";
 import { isPublicKeyMissingError } from "./utils";
 
@@ -9,7 +9,7 @@ import { isPublicKeyMissingError } from "./utils";
 const vapi = new Vapi("80895bf2-66fd-4a71-9c6c-3dcef783c644");
 
 const App = () => {
-  const [connecting, setConnecting] = useState(false);
+
   const [connected, setConnected] = useState(false);
 
   const [assistantIsSpeaking, setAssistantIsSpeaking] = useState(false);
@@ -20,14 +20,12 @@ const App = () => {
   // hook into Vapi events
   useEffect(() => {
     vapi.on("call-start", () => {
-      setConnecting(false);
       setConnected(true);
 
       setShowPublicKeyInvalidMessage(false);
     });
 
     vapi.on("call-end", () => {
-      setConnecting(false);
       setConnected(false);
 
       setShowPublicKeyInvalidMessage(false);
@@ -48,19 +46,12 @@ const App = () => {
     vapi.on("error", (error) => {
       console.error(error);
 
-      setConnecting(false);
-      if (isPublicKeyMissingError({ vapiError: error })) {
-        setShowPublicKeyInvalidMessage(true);
-      }
     });
 
-    // we only want this to fire on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // call start handler
   const startCallInline = () => {
-    setConnecting(true);
     vapi.start(assistantOptions);
   };
   const endCall = () => {
@@ -80,16 +71,17 @@ const App = () => {
     >
       {!connected ? (
        <img
-       src="BetterYou.png"
-       onClick={startCallInline}
-       style={{
-         cursor: "pointer",
-         width: "300px",
-         height: "auto",
-         borderRadius: "50%", // Mimics `rounded-full` for circular appearance
-       }}
-       className="bounce rounded-full" // Tailwind utility class for bounce animation
-     />
+         src="BetterYou.png"
+         alt="Better You"
+         onClick={startCallInline}
+         style={{
+           cursor: "pointer",
+           width: "300px",
+           height: "auto",
+           borderRadius: "50%", // Mimics `rounded-full` for circular appearance
+         }}
+         className="bounce rounded-full" // Tailwind utility class for bounce animation
+       />
       ) : (
         <ActiveCallDetail
           assistantIsSpeaking={assistantIsSpeaking}
@@ -105,7 +97,7 @@ const App = () => {
 
 const assistantOptions = {
   name: "AI Voice Clone Assistant",
-  firstMessage: "Hello! I'm your AI voice assistant, here to guide you toward your best self. Let's get started.",
+  firstMessage: "Hello! Welcome to Mirai where you can talk to different versions of you.",
   transcriber: {
     provider: "deepgram",
     model: "nova-2",
@@ -113,7 +105,7 @@ const assistantOptions = {
   },
   voice: {
     provider: "elevenlabs",
-    voiceId: "AP75bObawmAbTpaDIy4h",
+    voiceId: "jennifer",
   },
   model: {
     provider: "openai", // Core model for generating affirmations
